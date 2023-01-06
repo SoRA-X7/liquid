@@ -3,10 +3,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  namespace :app do
-    root 'application#show'
-    get '*path', to: 'application#show'
-  end
   namespace :api do
     namespace :v1 do
       mount_devise_token_auth_for 'User', at: 'auth'
