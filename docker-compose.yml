@@ -4,13 +4,9 @@ services:
     image: postgres
     environment:
       - POSTGRES_PASSWORD=admin
-  adminer:
-    image: adminer
-    ports:
-      - 8080:8080
   web:
     build: .
-    command: bash ./bin/start
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
     volumes:
       - .:/webapp
     ports:
