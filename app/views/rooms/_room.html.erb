@@ -14,4 +14,13 @@
     <%= room.available %>
   </p>
 
+  <div>
+    <strong>Waiting:</strong>
+    <ol>
+      <% room.tickets.each do |t| %>
+        <li><%= t.id %></li>
+      <% end %>
+    </ol>
+  </div>
+
 </div>
