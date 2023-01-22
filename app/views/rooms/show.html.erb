@@ -1,4 +1,7 @@
 <%= turbo_frame_tag "room" do %>
+<% if notice %>
+  <div class="my-2 alert alert-success"><%= notice %></div>
+<% end %>
 <div>
   <main class="my-2">
     <div class="p-2">
@@ -29,45 +32,47 @@
     </div>
   </main>
 
-  <div class="my-2 rounded-3">
-    <hr>
-    <h3 class="text-danger">| Admin menu</h3>
-    <h6>現在対戦中:</h6>
-      <% if @current %>
-        <div class="list-group-item active">
-          <strong><%= @current.user.name %></strong>
-          (<%= @current.user.email %>)
-        </div>
-      <% else %>
-        現在対戦中の人はいません
-      <% end %>
-    <hr>
-    <%= button_to "次の人を呼び出す", { action: "next" }, { class: "btn btn-danger", disabled: @room.tickets.empty? } %>
-    <br>
-    <h6>待機リスト</h6>
-    <ul class="list-group my-2">
-      <% if @room.tickets.alive.each do |t| %>
-        <li class="list-group-item">
-          <strong><%= t.user.name %></strong>
-          (<%= t.user.email %>)
-        </li>
-      <% end.empty? %>
-        <div class="alert alert-danger">現在待機中の人はいません</div>
-      <% end %>
-    </ol>
+  <% if user_signed_in? && @room.moderator?(current_user) %>
+    <div class="my-2 rounded-3">
+      <hr>
+      <h3 class="text-danger">| Admin menu</h3>
+      <h6>現在対戦中:</h6>
+        <% if @current %>
+          <div class="list-group-item active">
+            <strong><%= @current.user.name %></strong>
+            (<%= @current.user.email %>)
+          </div>
+        <% else %>
+          現在対戦中の人はいません
+        <% end %>
+      <hr>
+      <%= button_to "次の人を呼び出す", { action: "next" }, { class: "btn btn-danger", disabled: @room.tickets.empty? } %>
+      <br>
+      <h6>待機リスト</h6>
+      <ul class="list-group my-2">
+        <% if @room.tickets.alive.each do |t| %>
+          <li class="list-group-item">
+            <strong><%= t.user.name %></strong>
+            (<%= t.user.email %>)
+          </li>
+        <% end.empty? %>
+          <div class="alert alert-danger">現在待機中の人はいません</div>
+        <% end %>
+      </ol>
 
-    <hr>
+      <hr>
 
-    <%= link_to "Edit this room", edit_room_path(@room) %> |
-    <%= link_to "Back to rooms", rooms_path %>
+      <%= link_to "Edit this room", edit_room_path(@room) %> |
+      <%= link_to "Back to rooms", rooms_path %>
 
-    <%= button_to "Destroy this room", @room, method: :delete %>
-  </div>
+      <%= button_to "Destroy this room", @room, method: :delete %>
+    </div>
+  <% end %>
 </div>
 <% end %>
 
 <script>
 setInterval(() => {
   document.querySelector('#room').reload()
-}, 10000);
+}, 5000);
 </script>
