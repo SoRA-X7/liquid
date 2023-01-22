@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root 'roots#show'
   resources :rooms do
     member do
       post :apply
