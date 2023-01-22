@@ -1,8 +1,5 @@
-<header class="nav bg-light border-bottom text-center px-4 py-2">
-  <span class="fw-bold">Liquid</span> | Match queuing system
-</header>
-
-<div class="container">
+<%= turbo_frame_tag dom_id(@room) do %>
+<div>
 
   <% if notice %>
     <div class="my-2 alert alert-success"><%= notice %></div>
@@ -20,11 +17,14 @@
 
       <% if @position > 0 %>
         <div class="alert alert-warning">
-          あなたは現在: <strong class="display-3"><%= @position %></strong> 番目です
+          あなたは現在: <strong class="display-3"><%= @position %></strong> 番目です<br>
+          <span class="text-danger fw-bold">この画面を閉じないでください</span>
         </div>
-        <%= button_to "キャンセル", { action: "cancel" }, { class: "btn bg-white btn-outline-danger btn-lg mx-auto" } %>
+        <%= button_to "キャンセル", { action: "cancel" }, { class: "btn bg-white btn-outline-danger mx-auto" } %>
+      <% elsif user_signed_in? %>
+        <%= button_to "#{current_user.name} として参加登録", { action: "apply" }, { class: "btn bg-white btn-outline-success mx-auto" } %>
       <% else %>
-        <%= button_to "参加登録", { action: "apply" }, { class: "btn bg-white btn-outline-success btn-lg mx-auto" } %>
+        <%= link_to "ログインして参加登録", user_session_path, { class: "btn bg-white btn-outline-success mx-auto" } %>
       <% end %>
     </div>
   </main>
@@ -32,16 +32,31 @@
   <div class="my-2 rounded-3">
     <hr>
     <h3 class="text-danger">| Admin menu</h3>
-    <%= button_to "次の人を呼び出す", { action: "next" }, { class: "btn btn-danger" } %>
-
+    <h6>現在対戦中:</h6>
+      <% if @current %>
+        <div class="list-group-item active">
+          <strong><%= @current.user.name %></strong>
+          (<%= @current.user.email %>)
+        </div>
+      <% else %>
+        現在対戦中の人はいません
+      <% end %>
+    <hr>
+    <%= button_to "次の人を呼び出す", { action: "next" }, { class: "btn btn-danger", disabled: @room.tickets.empty? } %>
+    <br>
+    <h6>待機リスト</h6>
     <ul class="list-group my-2">
-      <% @room.tickets.each do |t| %>
+      <% if @room.tickets.alive.each do |t| %>
         <li class="list-group-item">
-          <%= t.user.name %>
+          <strong><%= t.user.name %></strong>
           (<%= t.user.email %>)
         </li>
+      <% end.empty? %>
+        <div class="alert alert-danger">現在待機中の人はいません</div>
       <% end %>
     </ol>
+
+    <hr>
 
     <%= link_to "Edit this room", edit_room_path(@room) %> |
     <%= link_to "Back to rooms", rooms_path %>
@@ -49,3 +64,4 @@
     <%= button_to "Destroy this room", @room, method: :delete %>
   </div>
 </div>
+<% end %>

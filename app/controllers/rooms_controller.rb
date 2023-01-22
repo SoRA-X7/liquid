@@ -16,6 +16,7 @@ class RoomsController < ApplicationController
                 else
                   -1
                 end
+    @current = @room.tickets.current.first
   end
 
   # GET /rooms/new
@@ -58,12 +59,13 @@ class RoomsController < ApplicationController
       redirect_to @room, notice: 'Forbidden'
       return
     end
+    @room.tickets.current.first&.destroy!
     n = @room.tickets.first
     unless n.present?
       redirect_to @room, notice: '待機中の人がいません'
       return
     end
-    n.destroy!
+    n.update!(position: 0)
     RepositionTicketsJob.perform_later(@room)
     redirect_to @room, notice: '次の人を呼び出します'
   end

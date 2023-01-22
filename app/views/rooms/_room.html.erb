@@ -16,11 +16,7 @@
 
   <div>
     <strong>Waiting:</strong>
-    <ol>
-      <% room.tickets.each do |t| %>
-        <li><%= t.id %></li>
-      <% end %>
-    </ol>
+    <%= room.tickets.alive.size %>
   </div>
 
 </div>
