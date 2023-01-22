@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :rooms do
     member do
       post :apply
+      post :cancel
       post :next
     end
   end

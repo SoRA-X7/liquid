@@ -1,4 +1,9 @@
-<div>
+<header class="nav bg-light border-bottom text-center px-4 py-2">
+  <span class="fw-bold">Liquid</span> | Match queuing system
+</header>
+
+<div class="container">
+
   <% if notice %>
     <div class="my-2 alert alert-success"><%= notice %></div>
   <% end %>
@@ -9,23 +14,35 @@
       <p><%= @room.description %></p>
       <p class="text-end blockquote-footer">By: <%= @room.owner&.name %></p>
     </div>
-    <div class="p-4 bg-light rounded-3">
+    <div class="p-4 <%= @position > 0 ? "bg-success" : "bg-primary" %> text-white rounded-3">
       現在待機中の人数:
       <span class="display-3 mx-3"><%= @room.tickets.size %></span>
 
       <% if @position > 0 %>
-        <div class="alert alert-success">
-          あなたは現在: <strong><%= @position %></strong> 番目
+        <div class="alert alert-warning">
+          あなたは現在: <strong class="display-3"><%= @position %></strong> 番目です
         </div>
+        <%= button_to "キャンセル", { action: "cancel" }, { class: "btn bg-white btn-outline-danger btn-lg mx-auto" } %>
       <% else %>
-        <%= button_to "参加登録", { action: "apply" }, { class: "btn btn-primary btn-lg mx-auto" } %>
+        <%= button_to "参加登録", { action: "apply" }, { class: "btn bg-white btn-outline-success btn-lg mx-auto" } %>
       <% end %>
     </div>
   </main>
 
-  <div class="my-2 p-4 bg-dark text-white rounded-3">
-    <p>Admin menu</p>
-    <%= button_to "Next", action: "next" %>
+  <div class="my-2 rounded-3">
+    <hr>
+    <h3 class="text-danger">| Admin menu</h3>
+    <%= button_to "次の人を呼び出す", { action: "next" }, { class: "btn btn-danger" } %>
+
+    <ul class="list-group my-2">
+      <% @room.tickets.each do |t| %>
+        <li class="list-group-item">
+          <%= t.user.name %>
+          (<%= t.user.email %>)
+        </li>
+      <% end %>
+    </ol>
+
     <%= link_to "Edit this room", edit_room_path(@room) %> |
     <%= link_to "Back to rooms", rooms_path %>
 

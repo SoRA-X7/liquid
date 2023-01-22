@@ -2,7 +2,7 @@
 
 class RoomsController < ApplicationController
   before_action :authenticate_user!, only: %i[new next apply]
-  before_action :set_room, only: %i[show edit update destroy apply next]
+  before_action :set_room, only: %i[show edit update destroy apply cancel next]
 
   # GET /rooms
   def index
@@ -29,6 +29,7 @@ class RoomsController < ApplicationController
   # POST /rooms
   def create
     @room = Room.new(room_params)
+    @room.user_room_authorities << UserRoomAuthority.new(room: @room, user: current_user, role: :owner)
 
     if @room.save
       redirect_to @room, notice: 'Room was successfully created.'
@@ -59,20 +60,31 @@ class RoomsController < ApplicationController
     end
     n = @room.tickets.first
     unless n.present?
-      redirect_to @room, notice: 'No tickets'
+      redirect_to @room, notice: '待機中の人がいません'
       return
     end
     n.destroy!
-    redirect_to @room, notice: 'Success'
+    RepositionTicketsJob.perform_later(@room)
+    redirect_to @room, notice: '次の人を呼び出します'
   end
 
   def apply
     if current_user.tickets.where(room: @room).present?
-      redirect_to @room, notice: 'Already applied'
+      redirect_to @room, notice: '既に参加登録済みです'
       return
     end
     @room.tickets << Ticket.create(room: @room, user: current_user, position: @room.tickets.size + 1)
-    redirect_to @room, notice: 'Successfully applied'
+    redirect_to @room, notice: '参加登録しました'
+  end
+
+  def cancel
+    unless Ticket.find_by(room: @room, user: current_user).present?
+      redirect_to @room, notice: '参加登録していません'
+      return
+    end
+    Ticket.find_by(room: @room, user: current_user).destroy!
+    RepositionTicketsJob.perform_later(@room)
+    redirect_to @room, notice: '参加登録を取り消しました'
   end
 
   private
