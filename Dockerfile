@@ -9,3 +9,5 @@ ADD Gemfile /webapp/Gemfile
 ADD Gemfile.lock /webapp/Gemfile.lock
 RUN bundle install
 ADD . /webapp
+
+CMD [ "bin/start" ]
