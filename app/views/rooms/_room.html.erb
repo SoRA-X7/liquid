@@ -1,22 +1,7 @@
-<div id="<%= dom_id room %>">
-  <p>
-    <strong>Name:</strong>
-    <%= room.name %>
-  </p>
-
-  <p>
-    <strong>Description:</strong>
-    <%= room.description %>
-  </p>
-
-  <p>
-    <strong>Available:</strong>
-    <%= room.available %>
-  </p>
-
-  <div>
-    <strong>Waiting:</strong>
-    <%= room.tickets.alive.size %>
+<div id="<%= dom_id room %>" class="card col">
+  <div class="card-body">
+    <h2><%= room.name %></h2>
+    <p><%= room.tickets.alive.size %>人待ち</p>
+    <%= link_to "ルームへ", room, class: "btn btn-primary" %>
   </div>
-
 </div>

@@ -65,7 +65,7 @@ class RoomsController < ApplicationController
       redirect_to @room, notice: '待機中の人がいません'
       return
     end
-    n.update!(position: 0)
+    n.update!(position: 0, message: params[:message])
     RepositionTicketsJob.perform_later(@room)
     redirect_to @room, notice: '次の人を呼び出します'
   end

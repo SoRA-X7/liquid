@@ -2,13 +2,12 @@
 
 <h1>Rooms</h1>
 
-<div id="rooms">
+<div id="rooms" class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
   <% @rooms.each do |room| %>
-    <%= render room %>
-    <p>
-      <%= link_to "Show this room", room %>
-    </p>
+    <div class="m-2">
+      <%= render room %>
+    </div>
   <% end %>
 </div>
 
-<%= link_to "New room", new_room_path %>
+<%= link_to "ルーム作成", new_room_path, class: "btn btn-success" %>

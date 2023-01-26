@@ -10,8 +10,12 @@
       <p class="text-end blockquote-footer">By: <%= @room.owner&.name %></p>
     </div>
     <% if @position == 0 %>
-      <div class="alert alert-danger display-2">
-        あなたの番です！
+      <div class="alert alert-danger">
+        <p class="display-2">あなたの番です！</p>
+        <p>
+          <strong>主催者からの共有事項：</strong>
+          <%= @current.message %>
+        </p>
       </div>
     <% end %>
     <div class="p-4 <%= @position > 0 ? "bg-success" : "bg-primary" %> text-white rounded-3">
@@ -46,7 +50,12 @@
           現在対戦中の人はいません
         <% end %>
       <hr>
-      <%= button_to "次の人を呼び出す", { action: "next" }, { class: "btn btn-danger", disabled: @room.tickets.empty? } %>
+      <%= form_with url: next_room_url, action: "next" do |form| %>
+        <div class="input-group">
+          <%= form.text_field :message, class: "form-control", placeholder: '共有事項を入力（省略可）', disabled: @room.tickets.empty? %>
+          <%= form.submit "次の人を呼び出す", { class: "btn btn-danger", disabled: @room.tickets.empty? } %>
+        </div>
+      <% end %>
       <br>
       <h6>待機リスト</h6>
       <ul class="list-group my-2">
