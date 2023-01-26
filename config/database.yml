@@ -85,7 +85,7 @@ test:
 production:
   <<: *default
   database: liquid_production
-  username: <%= ENV["DB_USER"] %>  # e.g. "my-database-user"
+  username: <%= ENV["DB_USER"] %> # e.g. "my-database-user"
   password: <%= ENV["DB_PASS"] %> # e.g. "my-database-password"
   # Specify the Unix socket path as host
-  socket: "<%= ENV["INSTANCE_UNIX_SOCKET"] %>"
+  socket: <%= ENV["INSTANCE_UNIX_SOCKET"] %>
